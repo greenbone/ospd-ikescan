@@ -22,12 +22,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import subprocess
+import logging
+
 from ospd.ospd import OSPDaemon
 from ospd.misc import main as daemon_main
 from ospd_ikescan import __version__
-
-import subprocess
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -198,16 +198,19 @@ OSPD_IKESCAN_PARAMS = \
       'mandatory': 0,
       'description': 'The timeout for the first packet sent to each host.',},}
 
+
 def get_ikescan_version():
     """ Check if ike-scan is executable and get the version """
     try:
-        output = subprocess.check_output(['ike-scan', '--version'],stderr=subprocess.STDOUT)
+        output = subprocess.check_output(['ike-scan', '--version'],
+                                         stderr=subprocess.STDOUT)
     except OSError:
         return None
     for line in str(output, 'utf-8').split('\n'):
         if line.startswith("ike-scan "):
             return line.split()[1]
     return None
+
 
 class OSPDikescan(OSPDaemon):
 
@@ -216,7 +219,7 @@ class OSPDikescan(OSPDaemon):
     def __init__(self, certfile, keyfile, cafile):
         """ Initializes the ospd-ikescan daemon's internal data. """
         super(OSPDikescan, self).__init__(certfile=certfile, keyfile=keyfile,
-                                            cafile=cafile)
+                                          cafile=cafile)
         self.server_version = __version__
         self.scanner_info['name'] = 'ike-scan'
         self.scanner_info['version'] = get_ikescan_version()
@@ -259,7 +262,7 @@ class OSPDikescan(OSPDaemon):
             if nat_t_source_port:
                 main_command = '%s--sport=%s ' % (main_command, nat_t_source_port)
 
-            if  nat_t_dest_port:
+            if nat_t_dest_port:
                 main_command = '%s--dport=%s ' % (main_command, nat_t_dest_port)
         else:
             if source_port:
@@ -290,7 +293,7 @@ class OSPDikescan(OSPDaemon):
                 report_port = '%s/udp' % dest_port
                 host_report = '%s' % dest_port
 
-        #Split user input in lists and save amout of iterations
+        # Split user input in lists and save amout of iterations
         group_names_list = group_names.split(",")
         gnl_iterations = len(group_names_list)
         encryption_algorithms_list = encryption_algorithms.split(",")
@@ -301,7 +304,7 @@ class OSPDikescan(OSPDaemon):
         aml_iterations = len(auth_methods_list)
         dh_groups_list = dh_groups.split(",")
         dhl_iterations = len(dh_groups_list)
-        iterations = 1 # starting with 1 because of the first check for an onlie endpoint 
+        iterations = 1  # starting with 1 because of the first check for an onlie endpoint
         index = 0
 
         # calculate overall number of iterations for scan progress
@@ -330,27 +333,28 @@ class OSPDikescan(OSPDaemon):
             self.set_scan_progress(scan_id, int(progress))
         except subprocess.CalledProcessError as errmsg:
             logger.debug(str(errmsg))
-            self.add_scan_error(scan_id, host=target,
-              value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
+            self.add_scan_error(
+                scan_id, host=target,
+                value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
             return 2
 
         result = str(result, 'utf-8')
         if target in result or '127.0.0.1' in result:
             report = 'An IPSEC VPN endpoint was detected on this host using:\n\n%s\n\nike-scan returned:\n\n%s' % (used_command, result)
             self.add_scan_alarm(scan_id, host=target, name='IPSEC VPN endpoint detected',
-              qod=95, value=report, port=report_port)
+                                qod=95, value=report, port=report_port)
             self.add_scan_host_detail(scan_id, host=target, name="ports",
-              value=host_report)
+                                      value=host_report)
             if 'tcp' in transport:
                 self.add_scan_host_detail(scan_id, host=target, name="tcp_ports",
-                  value=host_report)
+                                          value=host_report)
             else:
                 self.add_scan_host_detail(scan_id, host=target, name="udp_ports",
-                  value=host_report)
+                                          value=host_report)
         else:
             report = 'No IPSEC VPN endpoint was detected on this host using:\n\n%s\n\nike-scan returned:\n\n%s' % (used_command, result)
             self.add_scan_alarm(scan_id, host=target, name='No IPSEC VPN endpoint detected',
-              qod=95, value=report, port=report_port)
+                                qod=95, value=report, port=report_port)
 
         if aggressive_mode == 1:
             for group_name in group_names_list:
@@ -363,21 +367,21 @@ class OSPDikescan(OSPDaemon):
                                     trans = '--trans=%s,%s,%s,%s' % (encryption_algorithm, hash_algorithm, auth_method, dh_group)
                                     if use_nat_t == 1:
                                         result = subprocess.check_output(['ike-scan', '--aggressive',
-                                          '--nat-t', trans, '-n', group_name, main_command, target])
+                                                                          '--nat-t', trans, '-n', group_name, main_command, target])
                                         used_command = 'ike-scan --aggressive --nat-t %s -n %s %s%s' % (trans, group_name, main_command, target)
                                     else:
                                         result = subprocess.check_output(['ike-scan', '--aggressive',
-                                          trans, '-n', group_name, main_command, target])
+                                                                          trans, '-n', group_name, main_command, target])
                                         used_command = 'ike-scan --aggressive %s -n %s %s%s' % (trans, group_name, main_command, target)
                                     result = str(result, 'utf-8')
                                     if 'Aggressive Mode Handshake returned' in result:
                                         report = ('Aggressive Mode Handshaking succeeded using:\n\n%s\n\n'
-                                          '\n\nike-scan returned:\n\n%s'
-                                          '\n\nSince the VPN endpoint answers to requests using IKE Aggressive Mode Handshaking,'
-                                          'an attacker could potentially carry out a bruteforce attack against this host.'
-                                          % (used_command, result))
+                                                  '\n\nike-scan returned:\n\n%s'
+                                                  '\n\nSince the VPN endpoint answers to requests using IKE Aggressive Mode Handshaking,'
+                                                  'an attacker could potentially carry out a bruteforce attack against this host.'
+                                                  % (used_command, result))
                                         self.add_scan_alarm(scan_id, host=target, name='IKE Aggressive Mode Handshake returned',
-                                          qod=95, value=report, port=report_port, severity='5.0')
+                                                            qod=95, value=report, port=report_port, severity='5.0')
                                     index += 1
                                     progress = index * 100 / iterations
                                     self.set_scan_progress(scan_id, int(progress))
@@ -385,7 +389,7 @@ class OSPDikescan(OSPDaemon):
                                 except subprocess.CalledProcessError as errmsg:
                                     logger.debug(str(errmsg))
                                     self.add_scan_error(scan_id, host=target,
-                                      value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
+                                                        value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
                                     return 2
 
         if main_mode == 1:
@@ -406,7 +410,7 @@ class OSPDikescan(OSPDaemon):
                                 if 'Main Mode Handshake returned' in result:
                                     report = 'Main Mode Handshaking succeeded using:\n\n%s\n\nike-scan returned:%s' % (used_command, result)
                                     self.add_scan_alarm(scan_id, host=target, name='IKE Main Mode Handshake returned',
-                                      qod=95, value=report, port=report_port)
+                                                        qod=95, value=report, port=report_port)
                                 index += 1
                                 progress = index * 100 / iterations
                                 self.set_scan_progress(scan_id, int(progress))
@@ -414,7 +418,7 @@ class OSPDikescan(OSPDaemon):
                             except subprocess.CalledProcessError as errmsg:
                                 logger.debug(str(errmsg))
                                 self.add_scan_error(scan_id, host=target,
-                                  value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
+                                                    value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
                                 return 2
 
         if fingerprint_aggressive_mode == 1:
@@ -428,21 +432,21 @@ class OSPDikescan(OSPDaemon):
                                     trans = '--trans=%s,%s,%s,%s' % (encryption_algorithm, hash_algorithm, auth_method, dh_group)
                                     if use_nat_t == 1:
                                         result = subprocess.check_output(['ike-scan', '--aggressive', '--showbackoff',
-                                          '--nat-t', trans, '-n', group_name, main_command, target])
+                                                                          '--nat-t', trans, '-n', group_name, main_command, target])
                                         used_command = 'ike-scan --aggressive --showbackoff --nat-t %s -n %s %s%s' % (trans, group_name, main_command, target)
                                     else:
                                         result = subprocess.check_output(['ike-scan', '--aggressive', '--showbackoff',
-                                          trans, '-n', group_name, main_command, target])
+                                                                          trans, '-n', group_name, main_command, target])
                                         used_command = 'ike-scan --aggressive --showbackoff %s -n %s %s%s' % (trans, group_name, main_command, target)
                                     result = str(result, 'utf-8')
                                     if 'Aggressive Mode Handshake returned' in result:
                                         report = ('Aggressive Mode Handshaking and Fingerprinting succeeded using:\n\n%s\n\n'
-                                          '\n\nike-scan returned:\n\n%s'
-                                          '\n\nSince the VPN endpoint answers to requests using IKE Aggressive Mode Handshaking,'
-                                          'an attacker could potentially carry out a bruteforce attack against this host.'
-                                          % (used_command, result))
+                                                  '\n\nike-scan returned:\n\n%s'
+                                                  '\n\nSince the VPN endpoint answers to requests using IKE Aggressive Mode Handshaking,'
+                                                  'an attacker could potentially carry out a bruteforce attack against this host.'
+                                                  % (used_command, result))
                                         self.add_scan_alarm(scan_id, host=target, name='IKE Aggressive Mode Handshake and Fingerprint returned',
-                                          qod=95, value=report, port=report_port, severity='5.0')
+                                                            qod=95, value=report, port=report_port, severity='5.0')
                                     index += 1
                                     progress = index * 100 / iterations
                                     self.set_scan_progress(scan_id, int(progress))
@@ -450,7 +454,7 @@ class OSPDikescan(OSPDaemon):
                                 except subprocess.CalledProcessError as errmsg:
                                     logger.debug(str(errmsg))
                                     self.add_scan_error(scan_id, host=target,
-                                      value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
+                                                        value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
                                     return 2
 
         if fingerprint_main_mode == 1:
@@ -470,10 +474,10 @@ class OSPDikescan(OSPDaemon):
                                 result = str(result, 'utf-8')
                                 if 'Main Mode Handshake returned' in result:
                                     report = ('Aggressive Mode Handshaking and Fingerprinting succeeded using:\n\n%s\n\n'
-                                      '\n\nike-scan returned:\n\n%s'
-                                       % (used_command, result))
+                                              '\n\nike-scan returned:\n\n%s'
+                                              % (used_command, result))
                                     self.add_scan_alarm(scan_id, host=target, name='IKE Main Mode Handshake and Fingerprint returned',
-                                      qod=95, value=report, port=report_port)
+                                                        qod=95, value=report, port=report_port)
                                 index += 1
                                 progress = index * 100 / iterations
                                 self.set_scan_progress(scan_id, int(progress))
@@ -481,9 +485,10 @@ class OSPDikescan(OSPDaemon):
                             except subprocess.CalledProcessError as errmsg:
                                 logger.debug(str(errmsg))
                                 self.add_scan_error(scan_id, host=target,
-                                  value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
+                                                    value='A problem occurred trying to execute "ike-scan": %s' % str(errmsg))
                                 return 2
         return 0
+
 
 def main():
     """ OSP ikescan main function. """
