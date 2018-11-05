@@ -51,7 +51,7 @@ OSPD_IKESCAN_PARAMS = \
       'name': 'Destination port number',
       'default': 500,
       'mandatory': 0,
-      'description': 'The destionation port number used by ike-scan.',},
+      'description': 'The destination port number used by ike-scan.',},
 
      'transport':
      {'type': 'selection',
@@ -87,7 +87,7 @@ OSPD_IKESCAN_PARAMS = \
       'name': 'Destination port number',
       'default': 4500,
       'mandatory': 0,
-      'description': 'The destionation port number for NAT-Traversal used by ike-scan.',},
+      'description': 'The destination port number for NAT-Traversal used by ike-scan.',},
 
      'aggressive_mode':
      {'type': 'boolean',
@@ -129,7 +129,7 @@ OSPD_IKESCAN_PARAMS = \
       'name': 'Encryption algorithms',
       'default': '1,2,3,4,5,6,7/128,7/196,7/256,8',
       'mandatory': 0,
-      'description': 'A comma seperated list of encryption algorithms to use. Possible values are: '
+      'description': 'A comma separated list of encryption algorithms to use. Possible values are: '
                      '1 -> DES , '
                      '2 -> IDEA , '
                      '3 -> Blowfish , '
@@ -146,7 +146,7 @@ OSPD_IKESCAN_PARAMS = \
       'name': 'Hash algorithms',
       'default': '1,2,3,4,5,6',
       'mandatory': 0,
-      'description': 'A comma seperated list of hash algorithms to use. Possible values are: '
+      'description': 'A comma separated list of hash algorithms to use. Possible values are: '
                      '1 -> MD5 , '
                      '2 -> SHA1 , '
                      '3 -> Tiger , '
@@ -159,7 +159,7 @@ OSPD_IKESCAN_PARAMS = \
       'name': 'Authentication methods',
       'default': '1,2,3,4,5,6,7,8,64221,65001',
       'mandatory': 0,
-      'description': 'A comma seperated list of authentication methods to use. Possible values are: '
+      'description': 'A comma separated list of authentication methods to use. Possible values are: '
                      '1 -> PSK , '
                      '2 -> DSS-Signature , '
                      '3 -> RSA-Signature , '
@@ -176,7 +176,7 @@ OSPD_IKESCAN_PARAMS = \
       'name': 'Diffie-Hellmann groups',
       'default': '1,2,3,4,5',
       'mandatory': 0,
-      'description': 'A comma seperated list of encryption algorithms to use. Possible values are: '
+      'description': 'A comma separated list of encryption algorithms to use. Possible values are: '
                      '1 -> MODP-768 , '
                      '2 -> MODP-1024 , '
                      '3 -> EC2N-155 , '
@@ -293,7 +293,7 @@ class OSPDikescan(OSPDaemon):
                 report_port = '%s/udp' % dest_port
                 host_report = '%s' % dest_port
 
-        # Split user input in lists and save amout of iterations
+        # Split user input in lists and save amount of iterations
         group_names_list = group_names.split(",")
         gnl_iterations = len(group_names_list)
         encryption_algorithms_list = encryption_algorithms.split(",")
@@ -304,7 +304,7 @@ class OSPDikescan(OSPDaemon):
         aml_iterations = len(auth_methods_list)
         dh_groups_list = dh_groups.split(",")
         dhl_iterations = len(dh_groups_list)
-        iterations = 1  # starting with 1 because of the first check for an onlie endpoint
+        iterations = 1  # starting with 1 because of the first check for an online endpoint
         index = 0
 
         # calculate overall number of iterations for scan progress
