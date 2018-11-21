@@ -20,7 +20,7 @@ Then you can create scan tasks to use this scanner.
 Python 3 and later is supported.
 
 Beyond the [ospd base library](https://github.com/greenbone/ospd) and the
-`ike-scan` tool, `ospd-ikescan` has no further dependecies.
+`ike-scan` tool, `ospd-ikescan` has no further dependencies.
 
 There are no special installation aspects for this module beyond the general
 installation guide for ospd-based scanners.
