@@ -2,6 +2,8 @@
 
 # ospd-ikescan
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/greenbone/ospd-ikescan/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/greenbone/ospd-ikescan/?branch=master)
+
 This is an OSP server implementation to allow GVM to remotely control
 an `ike-scan` scanner, see <https://github.com/royhills/ike-scan>.
 
