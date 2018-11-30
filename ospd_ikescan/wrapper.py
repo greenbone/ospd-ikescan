@@ -44,21 +44,21 @@ OSPD_IKESCAN_PARAMS = \
       'name': 'Source port number',
       'default': 500,
       'mandatory': 0,
-      'description': 'The source port number used by ike-scan.',},
+      'description': 'The source port number used by ike-scan.', },
 
      'dest_port':
      {'type': 'integer',
       'name': 'Destination port number',
       'default': 500,
       'mandatory': 0,
-      'description': 'The destination port number used by ike-scan.',},
+      'description': 'The destination port number used by ike-scan.', },
 
      'transport':
      {'type': 'selection',
       'name': 'Transport to use',
       'default': 'udp|udp|tcp',
       'mandatory': 0,
-      'description': 'Whether to use TCP or UDP to run ike-scan.',},
+      'description': 'Whether to use TCP or UDP to run ike-scan.', },
 
      'tcp_mode':
      {'type': 'selection',
@@ -66,63 +66,63 @@ OSPD_IKESCAN_PARAMS = \
       'default': '1|1|2',
       'mandatory': 0,
       'description': '1 = RAW IKE over TCP as used by Checkpoint (default), '
-                     '2 = Encapsulated IKE over TCP as used by Cisco.',},
+                     '2 = Encapsulated IKE over TCP as used by Cisco.', },
 
      'use_nat_t':
      {'type': 'boolean',
       'name': 'Use NAT-Traversal',
       'default': '0',
       'mandatory': 0,
-      'description': 'Whether to use  RFC 3947 NAT-Traversal encapsulation.',},
+      'description': 'Whether to use  RFC 3947 NAT-Traversal encapsulation.', },
 
      'nat_t_source_port':
      {'type': 'integer',
       'name': 'Source port number for NAT-Traversal',
       'default': 4500,
       'mandatory': 0,
-      'description': 'The source port number for NAT-Traversal used by ike-scan.',},
+      'description': 'The source port number for NAT-Traversal used by ike-scan.', },
 
      'nat_t_dest_port':
      {'type': 'integer',
       'name': 'Destination port number',
       'default': 4500,
       'mandatory': 0,
-      'description': 'The destination port number for NAT-Traversal used by ike-scan.',},
+      'description': 'The destination port number for NAT-Traversal used by ike-scan.', },
 
      'aggressive_mode':
      {'type': 'boolean',
       'name': 'Enable Aggressive Mode',
       'default': 1,
       'mandatory': 0,
-      'description': 'Whether to use Aggressive Mode to run ike-scan.',},
+      'description': 'Whether to use Aggressive Mode to run ike-scan.', },
 
      'main_mode':
      {'type': 'boolean',
       'name': 'Enable Main Mode',
       'default': 0,
       'mandatory': 0,
-      'description': 'Whether to use Main Mode to run ike-scan.',},
+      'description': 'Whether to use Main Mode to run ike-scan.', },
 
      'fingerprint_aggressive_mode':
      {'type': 'boolean',
       'name': 'Enable fingerprint using Aggressive Mode',
       'default': 0,
       'mandatory': 0,
-      'description': 'Whether to fingerprint using Aggressive Mode.',},
+      'description': 'Whether to fingerprint using Aggressive Mode.', },
 
      'fingerprint_main_mode':
      {'type': 'boolean',
       'name': 'Enable fingerprint using Main Mode',
       'default': 0,
       'mandatory': 0,
-      'description': 'Whether to fingerprint using Main Mode.',},
+      'description': 'Whether to fingerprint using Main Mode.', },
 
      'group_names':
      {'type': 'string',
       'name': 'Group names',
       'default': 'vpn',
       'mandatory': 0,
-      'description': 'A comma sperated list of group names to use.',},
+      'description': 'A comma sperated list of group names to use.', },
 
      'encryption_algorithms':
      {'type': 'string',
@@ -139,7 +139,7 @@ OSPD_IKESCAN_PARAMS = \
                      '7/128 -> AES-128 , '
                      '7/196 -> AES-196 , '
                      '7/256 -> AES-256 , '
-                     '8 -> Camellia',},
+                     '8 -> Camellia', },
 
      'hash_algorithms':
      {'type': 'string',
@@ -152,7 +152,7 @@ OSPD_IKESCAN_PARAMS = \
                      '3 -> Tiger , '
                      '4 -> SHA-256 , '
                      '5 -> SHA-384 , '
-                     '6 -> SHA-512',},
+                     '6 -> SHA-512', },
 
      'auth_methods':
      {'type': 'string',
@@ -169,7 +169,7 @@ OSPD_IKESCAN_PARAMS = \
                      '7 -> Revised-ElGamel-Encryption , '
                      '8 -> ECDSA-Signature , '
                      '64221 -> Hybrid , '
-                     '65001 -> XAUTH',},
+                     '65001 -> XAUTH', },
 
      'dh_groups':
      {'type': 'string',
@@ -181,22 +181,22 @@ OSPD_IKESCAN_PARAMS = \
                      '2 -> MODP-1024 , '
                      '3 -> EC2N-155 , '
                      '4 -> EC2N-185 , '
-                     '5 -> MODP-1536',},
-      # technically we should do 1-20 <http://www.nta-monitor.com/wiki/index.php/Ike-scan_User_Guide#Diffie-Hellman_Group_Values> but that's a bitch
+                     '5 -> MODP-1536', },
+     # technically we should do 1-20 <http://www.nta-monitor.com/wiki/index.php/Ike-scan_User_Guide#Diffie-Hellman_Group_Values> but that's a bitch
 
      'max_retry':
      {'type': 'integer',
       'name': 'Maximum retry',
       'default': '3',
       'mandatory': 0,
-      'description': 'The total number of attempts per host.',},
+      'description': 'The total number of attempts per host.', },
 
      'max_timeout':
      {'type': 'integer',
       'name': 'Maximum timeout',
       'default': '500',
       'mandatory': 0,
-      'description': 'The timeout for the first packet sent to each host.',},}
+      'description': 'The timeout for the first packet sent to each host.', }, }
 
 
 def get_ikescan_version():
